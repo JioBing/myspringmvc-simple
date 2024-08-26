@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -22,6 +23,12 @@
 <h1>这里是SpringMVC Demo首页</h1>
 
 <h3>出现此页面，说明配置成功。</h3>
+
+<%--点击链接跳转到用户管理首页--%>
+<a href="${ pageContext.request.contextPath }/admin/users">前往用户管理</a>
+<p></p>
+<%--点击链接跳转到博客管理首页--%>
+<a href="${ pageContext.request.contextPath }/admin/blogs">前往博客管理</a>
 
 <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
 <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>

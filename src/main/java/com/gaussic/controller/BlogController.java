@@ -7,10 +7,7 @@ import com.gaussic.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,14 +17,19 @@ import java.util.List;
 @Controller
 public class BlogController {
 
-    @Autowired
-    BlogRepository blogRepository;
 
+    private final UserRepository userRepository;
+    private final BlogRepository blogRepository;
+
+    /*注入方式修改为通过构造方法注入，原来的字段注入不推荐*/
     @Autowired
-    UserRepository userRepository;
+    public BlogController(UserRepository userRepository, BlogRepository blogRepository) {
+        this.userRepository = userRepository;
+        this.blogRepository = blogRepository;
+    }
 
     // 查看所有博文
-    @RequestMapping(value = "/admin/blogs", method = RequestMethod.GET)
+    @GetMapping(value = "/admin/blogs")
     public String showBlogs(ModelMap modelMap) {
         List<BlogEntity> blogList = blogRepository.findAll();
         modelMap.addAttribute("blogList", blogList);
@@ -35,7 +37,7 @@ public class BlogController {
     }
 
     // 添加博文
-    @RequestMapping(value = "/admin/blogs/add", method = RequestMethod.GET)
+    @GetMapping(value = "/admin/blogs/add")
     public String addBlog(ModelMap modelMap) {
         List<UserEntity> userList = userRepository.findAll();
         // 向jsp注入用户列表
@@ -44,7 +46,7 @@ public class BlogController {
     }
 
     // 添加博文，POST请求，重定向为查看博客页面
-    @RequestMapping(value = "/admin/blogs/addP", method = RequestMethod.POST)
+    @PostMapping(value = "/admin/blogs/addP")
     public String addBlogPost(@ModelAttribute("blog") BlogEntity blogEntity) {
         // 打印博客标题
         System.out.println(blogEntity.getTitle());
@@ -57,7 +59,7 @@ public class BlogController {
     }
 
     // 查看博文详情，默认使用GET方法时，method可以缺省
-    @RequestMapping("/admin/blogs/show/{id}")
+    @GetMapping("/admin/blogs/show/{id}")
     public String showBlog(@PathVariable("id") int id, ModelMap modelMap) {
         BlogEntity blog = blogRepository.findOne(id);
         modelMap.addAttribute("blog", blog);
