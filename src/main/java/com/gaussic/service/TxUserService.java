@@ -17,6 +17,12 @@ import javax.persistence.Query;
 
 @Service
 public class TxUserService {
+
+    /**
+     * @PersistenceContext是JPA专门用来注入entityManager对象的，使用@Autowired注入会有问题
+     * 项目运行时，容器创建初始化了两个相同的实例，都指向了同一个代理对象，导致在@Service类中注入private  EntityManager entityManager报错
+     * 对象类型EntityManager不唯一，因此改用@PersistenceContext注入，因为EntityManager是通过事务管理器工厂创建的，内部比较复杂。
+     */
     private  EntityManager entityManager;
     @PersistenceContext
     public void setEntityManager(EntityManager entityManager) {
