@@ -1,11 +1,13 @@
 package com.gaussic.controller;
 
+import com.gaussic.config.BeanLister;
+import com.gaussic.entity.Result;
+import com.gaussic.entity.StatusCode;
 import com.gaussic.model.UserEntity;
 import com.gaussic.repository.UserRepository;
+import com.gaussic.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,10 +21,14 @@ public class MainController {
 
     // 自动装配数据库接口，不需要再写原始的Connection来操作数据库
     private final UserRepository userRepository;
+    private final UserService userService;
+    private final BeanLister beanLister;
 
     @Autowired
-    public MainController(UserRepository userRepository) {
+    public MainController(UserRepository userRepository, UserService userService, BeanLister beanLister) {
         this.userRepository = userRepository;
+        this.userService = userService;
+        this.beanLister = beanLister;
     }
 
     @GetMapping(value = "/")
@@ -109,4 +115,19 @@ public class MainController {
         userRepository.flush();
         return "redirect:/admin/users";
     }
+
+
+    @PostMapping(path = "/testSaveUser")
+    @ResponseBody
+    public Result saveUser(@RequestBody UserEntity user) {
+        userService.saveUser(user);
+        return new Result(true, StatusCode.OK, "保存用户成功", null);
+    }
+
+    @GetMapping("/list-beans")
+    public String listBeans() {
+        beanLister.listBeans();
+        return "Beans listed in the console.";
+    }
+
 }
